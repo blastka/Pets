@@ -1,5 +1,7 @@
 package com.example.myapplication
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -33,7 +35,7 @@ class MainViewModelTest {
  * Он не лезет в sharedPreference
  */
 private class FakeRepository(private val authorization: Boolean): MainRepository{
-    fun authorization(): Boolean{
+    override fun authorization(): Boolean{
         return authorization
     }
 }
@@ -41,7 +43,7 @@ private class FakeRepository(private val authorization: Boolean): MainRepository
 /**
  * Обертка над livedata
  */
-private interface FakeMainCommunication: MainCommunication{
+private interface FakeMainCommunication: MainCommunication.Mutable{
     fun checkCalledCount(count: Int): Boolean
     fun isSame(uiState: UiState): Boolean
 
@@ -50,7 +52,7 @@ private interface FakeMainCommunication: MainCommunication{
         private var callCount = 0
 
         override fun checkCalledCount(count: Int): Boolean {
-            TODO("Not yet implemented")
+            return callCount == count
         }
 
         override fun isSame(uiState: UiState): Boolean {
@@ -60,6 +62,10 @@ private interface FakeMainCommunication: MainCommunication{
         override fun put(value: UiState){
             callCount++
             state = value
+        }
+
+        override fun observe(owner: LifecycleOwner, observer: Observer<UiState>) {
+            return Unit
         }
 
     }
