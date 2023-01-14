@@ -1,71 +1,145 @@
 package com.example.myapplication
 
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
+import com.example.myapplication.presentation.AnimalCommunication
+import com.example.myapplication.presentation.AnimalUi
+import com.example.myapplication.presentation.AnimalViewModel
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class MainViewModelTest {
     @Test
-    fun test_first_start_not_authorization(){
-        val repository = FakeRepository(false)
-        val communication = FakeMainCommunication.Base()
-        val viewModel = MainViewModel(repository, communication)
+    fun test_init() {
+        val interactor = FakeAnimalInteractor()
+        val communication = FakeAnimalCommunication.Base()
+        val viewModel = AnimalViewModel(interactor, communication)
         viewModel.init(isFirstRun = true)
-        assertEquals(true, communication.checkCalledCount(1))
-        assertEquals(true, communication.isSame(UiState.NotAuthorization))
+        interactor.changeExpectedResult(AnimalResult.Success())
+        assertEquals(1, communication.progressCalledList.size)
+        assertEquals(true, communication.progressCalledList[0])
+
+        assertEquals(2, communication.progressCalledList.size)
+        assertEquals(false, communication.progressCalledList[1])
+
+        assertEquals(1, communication.stateCalledList.size)
+        assertEquals(UiState.Success(emptyList<AnimalUi>()), communication.stateCalledList[0])
+
+        assertEquals(0, communication.animalList.size)
+        assertEquals(1, communication.timesShowList)
+
+        interactor.changeExpectedResult(AnimalResult.Failure("No internet connection."))
+        viewModel.fetchAnimalData()
+
+        assertEquals(3, communication.progressCalledList.size)
+        assertEquals(true, communication.progressCalledList[2])
+
+        assertEquals(1, interactor.fetchAboutAnimalCalledList.size)
+
+        assertEquals(4, communication.progressCalledList.size)
+        assertEquals(false, communication.progressCalledList[2])
+
+        assertEquals(2, communication.stateCalledList.size)
+        assertEquals(UiState.Error("No internet connection."), communication.stateCalledList[1])
+
+        assertEquals(1, communication.timesShowList)
+
         viewModel.init(isFirstRun = false)
-        assertEquals(true, communication.checkCalledCount(1))
+        assertEquals(4, communication.progressCalledList.size)
+        assertEquals(2, communication.stateCalledList.size)
+        assertEquals(1, communication.timesShowList)
     }
 
     @Test
-    fun test_start_with_authorization(){
-        val repository = FakeRepository(true)
-        val communication = FakeMainCommunication.Base()
-        val viewModel = MainViewModel(repository, communication)
-        viewModel.init(isFirstRun = true)
-        assertEquals(true, communication.checkCalledCount(1))
-        assertEquals(true, communication.isSame(UiState.Authorization))
-        viewModel.init(isFirstRun = false)
-        assertEquals(true, communication.checkCalledCount(1))
+    fun test_empty() {
+        val interactor = FakeAnimalInteractor()
+        val communication = FakeAnimalCommunication.Base()
+        val viewModel = AnimalViewModel(interactor, communication)
+        viewModel.fetchFact("")
+
+        assertEquals(0, interactor.fetchAboutAnimalCalledList.size)
+
+        assertEquals(0, communication.progressCalledList.size)
+        assertEquals(1, communication.stateCalledList.size)
+        assertEquals(UiState.Error("Entered number is empty."), communication.stateCalledList[0])
+        assertEquals(0, communication.timesShowList)
+
+    }
+
+    @Test
+    fun test_fact_about_animal() {
+        val interactor = FakeAnimalInteractor()
+        val communication = FakeAnimalCommunication.Base()
+        val viewModel = AnimalViewModel(interactor, communication)
+        interactor.changeExpectedResult(
+            AnimalResult.Success(
+                listOf(
+                    AnimalFact(
+                        "cat",
+                        "fact about cat"
+                    ),
+                )
+            )
+        )
+        viewModel.fetchFact("cat")
+
+        assertEquals(1, communication.progressCalledList.size)
+        assertEquals(true, communication.progressCalledList[0])
+
+        assertEquals(1, interactor.fetchAboutAnimalCalledList.size)
+        assertEquals(AnimalFact("cat", "fact about cat"), interactor.fetchAboutAnimalCalledList[0])
+
+
+        assertEquals(2, communication.progressCalledList.size)
+        assertEquals(false, communication.progressCalledList[1])
+
+        assertEquals(1, communication.stateCalledList.size)
+        assertEquals(UiState.Success(), communication.stateCalledList[0])
+
+        assertEquals(1, communication.timesShowList)
+        assertEquals(AnimalUi("cat", "fact about cat"), communication.animalList[0])
+    }
+
+}
+
+private class FakeAnimalInteractor() : AnimalInteractor {
+
+    private var result: AnimalResult = AnimalResult.Success()
+
+    val initCalledList = mutableListOf<AnimalResult>()
+    val fetchAboutAnimalCalledList = mutableListOf<AnimalResult>()
+
+    fun changeExpectedResult(newResult: AnimalResult) {
+        result = newResult
+    }
+
+    override suspend fun init(): AnimalResult {
+        initCalledList.add(result)
+        return result
+    }
+
+    override suspend fun factAboutAnimal(animalList: List<String>): AnimalResult {
+        fetchAboutAnimalCalledList.add()
+        return result
     }
 }
 
-/**
- * Он не лезет в sharedPreference
- */
-private class FakeRepository(private val authorization: Boolean): MainRepository{
-    override fun authorization(): Boolean{
-        return authorization
-    }
-}
+private interface FakeAnimalCommunication : AnimalCommunication {
+    class Base() : FakeAnimalCommunication {
+        val progressCalledList = mutableListOf<Boolean>()
+        val stateCalledList = mutableListOf<UiState>()
+        val animalList = mutableListOf<AnimalUi>()
+        var timesShowList = 0
 
-/**
- * Обертка над livedata
- */
-private interface FakeMainCommunication: MainCommunication.Mutable{
-    fun checkCalledCount(count: Int): Boolean
-    fun isSame(uiState: UiState): Boolean
-
-    class Base(): FakeMainCommunication{
-        private lateinit var state: UiState
-        private var callCount = 0
-
-        override fun checkCalledCount(count: Int): Boolean {
-            return callCount == count
+        override fun showProgress(show: Boolean) {
+            progressCalledList.add(show)
         }
 
-        override fun isSame(uiState: UiState): Boolean {
-            return state.equals(uiState)
+        override fun showState(uiState: UiState) {
+            stateCalledList.add(uiState)
         }
 
-        override fun put(value: UiState){
-            callCount++
-            state = value
-        }
-
-        override fun observe(owner: LifecycleOwner, observer: Observer<UiState>) {
-            return Unit
+        override fun showList(list: List<AnimalUi>) {
+            timesShowList++
+            animalList.addAll(list)
         }
 
     }
