@@ -10,7 +10,7 @@ import com.example.myapplication.UiState
 class AnimalViewModel(
     private val interactor: AnimalInteractor,
     private val communication: AnimalCommunication,
-    private val mapper: AnimalFact.Mapper<AnimalUi> = AnimalUiMapper()
+    private val animalResultMapper: AnimalResult.Mapper<Unit>
 
 ) : ObserveAnimals, FetchAnimal {
 
@@ -32,16 +32,7 @@ class AnimalViewModel(
             viewModelScoupe.launch {
                 val result = interactor.init()
                 communication.showProgress(false)
-                result.map(object : AnimalResult.Mapper<Unit> {
-                    override fun map(list: List<AnimalFact>, errorMessage: String) {
-                        communication.showState(
-                            if (errorMessage.isEmpty()) {
-                                (UiState.Success(list.map { it.map(mapper) }))
-                            } else
-                                UiState.Error(errorMessage)
-                        )
-                    }
-                })
+                result.map(animalResultMapper)
             }
         }
     }
