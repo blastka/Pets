@@ -21,7 +21,7 @@ class MainViewModelTest {
         assertEquals(false, communication.progressCalledList[1])
 
         assertEquals(1, communication.stateCalledList.size)
-        assertEquals(UiState.Success(emptyList<AnimalUi>()), communication.stateCalledList[0])
+        assertEquals(UiState.Success(emptyList()), communication.stateCalledList[0])
 
         assertEquals(0, communication.animalList.size)
         assertEquals(1, communication.timesShowList)
@@ -53,7 +53,7 @@ class MainViewModelTest {
         val interactor = FakeAnimalInteractor()
         val communication = FakeAnimalCommunication.Base()
         val viewModel = AnimalViewModel(interactor, communication)
-        viewModel.fetchFact("")
+        viewModel.fetchAnimalData("")
 
         assertEquals(0, interactor.fetchAboutAnimalCalledList.size)
 
@@ -79,7 +79,7 @@ class MainViewModelTest {
                 )
             )
         )
-        viewModel.fetchFact("cat")
+        viewModel.fetchAnimalData("cat")
 
         assertEquals(1, communication.progressCalledList.size)
         assertEquals(true, communication.progressCalledList[0])
