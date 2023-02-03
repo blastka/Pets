@@ -1,5 +1,7 @@
 package com.example.myapplication
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.example.myapplication.presentation.AnimalCommunication
 import com.example.myapplication.presentation.AnimalUi
 import com.example.myapplication.presentation.AnimalViewModel
@@ -27,7 +29,7 @@ class MainViewModelTest {
         assertEquals(1, communication.timesShowList)
 
         interactor.changeExpectedResult(AnimalResult.Failure("No internet connection."))
-        viewModel.fetchAnimalData()
+        viewModel.fetchFact()
 
         assertEquals(3, communication.progressCalledList.size)
         assertEquals(true, communication.progressCalledList[2])
@@ -117,7 +119,7 @@ private class FakeAnimalInteractor() : AnimalInteractor {
     }
 
     override suspend fun factAboutAnimal(animalList: List<String>): AnimalResult {
-        fetchAboutAnimalCalledList.add()
+        fetchAboutAnimalCalledList.add(result)
         return result
     }
 }
@@ -141,6 +143,10 @@ private interface FakeAnimalCommunication : AnimalCommunication {
             timesShowList++
             animalList.addAll(list)
         }
+
+        override fun observeProgress(owner: LifecycleOwner, observe: Observer<Boolean>) = Unit
+        override fun observeState(owner: LifecycleOwner, observe: Observer<UiState>) = Unit
+        override fun observeList(owner: LifecycleOwner, observe: Observer<List<AnimalUi>>) = Unit
 
     }
 }
