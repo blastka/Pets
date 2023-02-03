@@ -31,17 +31,16 @@ class AnimalViewModel(
             communication.showProgress(true)
             viewModelScoupe.launch {
                 val result = interactor.init()
+                communication.showProgress(false)
                 result.map(object : AnimalResult.Mapper<Unit> {
                     override fun map(list: List<AnimalFact>, errorMessage: String) {
-                        if (errorMessage.isEmpty()) {
-                            communication.showState(UiState.Success(list.map {
-                                it.map(mapper)
-                            }))
-                        } else{
-                            communication.showState(UiState.Error(errorMessage))
-                        }
+                        communication.showState(
+                            if (errorMessage.isEmpty()) {
+                                (UiState.Success(list.map { it.map(mapper) }))
+                            } else
+                                UiState.Error(errorMessage)
+                        )
                     }
-
                 })
             }
         }
