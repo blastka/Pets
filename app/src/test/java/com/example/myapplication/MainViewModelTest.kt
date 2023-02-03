@@ -2,9 +2,7 @@ package com.example.myapplication
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import com.example.myapplication.presentation.AnimalCommunication
-import com.example.myapplication.presentation.AnimalUi
-import com.example.myapplication.presentation.AnimalViewModel
+import com.example.myapplication.presentation.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -13,7 +11,11 @@ class MainViewModelTest {
     fun test_init() {
         val interactor = FakeAnimalInteractor()
         val communication = FakeAnimalCommunication.Base()
-        val viewModel = AnimalViewModel(interactor, communication)
+        val viewModel = AnimalViewModel(
+            interactor,
+            communication,
+            AnimalResultMapper(communication, AnimalUiMapper())
+        )
         viewModel.init(isFirstRun = true)
         interactor.changeExpectedResult(AnimalResult.Success())
         assertEquals(1, communication.progressCalledList.size)
@@ -23,7 +25,7 @@ class MainViewModelTest {
         assertEquals(false, communication.progressCalledList[1])
 
         assertEquals(1, communication.stateCalledList.size)
-        assertEquals(UiState.Success(emptyList()), communication.stateCalledList[0])
+        assertEquals(UiState.Success(), communication.stateCalledList[0])
 
         assertEquals(0, communication.animalList.size)
         assertEquals(1, communication.timesShowList)
@@ -54,7 +56,11 @@ class MainViewModelTest {
     fun test_empty() {
         val interactor = FakeAnimalInteractor()
         val communication = FakeAnimalCommunication.Base()
-        val viewModel = AnimalViewModel(interactor, communication)
+        val viewModel = AnimalViewModel(
+            interactor,
+            communication,
+            AnimalResultMapper(communication, AnimalUiMapper())
+        )
         viewModel.fetchAnimalData("")
 
         assertEquals(0, interactor.fetchAboutAnimalCalledList.size)
@@ -70,7 +76,11 @@ class MainViewModelTest {
     fun test_fact_about_animal() {
         val interactor = FakeAnimalInteractor()
         val communication = FakeAnimalCommunication.Base()
-        val viewModel = AnimalViewModel(interactor, communication)
+        val viewModel = AnimalViewModel(
+            interactor,
+            communication,
+            AnimalResultMapper(communication, AnimalUiMapper())
+        )
         interactor.changeExpectedResult(
             AnimalResult.Success(
                 listOf(
