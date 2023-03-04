@@ -2,7 +2,7 @@ package com.example.myapplication.presentation
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import com.example.myapplication.AnimalFact
+import androidx.lifecycle.ViewModel
 import com.example.myapplication.AnimalInteractor
 import com.example.myapplication.AnimalResult
 import com.example.myapplication.UiState
@@ -12,7 +12,7 @@ class AnimalViewModel(
     private val communication: AnimalCommunication,
     private val animalResultMapper: AnimalResult.Mapper<Unit>
 
-) : ObserveAnimals, FetchAnimal {
+) : ObserveAnimals, FetchAnimal, ViewModel() {
 
     override fun observeProgress(owner: LifecycleOwner, observe: Observer<Boolean>) {
         communication.observeProgress(owner, observe)
@@ -27,14 +27,14 @@ class AnimalViewModel(
     }
 
     override fun init(isFirstRun: Boolean) {
-        if (isFirstRun) {
+       /* if (isFirstRun) {
             communication.showProgress(true)
             viewModelScoupe.launch {
                 val result = interactor.init()
                 communication.showProgress(false)
                 result.map(animalResultMapper)
             }
-        }
+        }*/
     }
 
     override fun fetchFact() {
