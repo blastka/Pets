@@ -1,5 +1,6 @@
 package com.example.myapplication.animal.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +9,17 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import com.example.myapplication.R
 import com.example.myapplication.details.DetailsFragment
+import com.example.myapplication.presentation.ShowFragment
 
 class AnimalFragment : Fragment() {
+
+    private var showFragment: ShowFragment = ShowFragment.Empty()
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        showFragment = context as ShowFragment
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -23,14 +33,12 @@ class AnimalFragment : Fragment() {
         view.findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
 
         view.findViewById<View>(R.id.factButton).setOnClickListener {
-            val detailsFragment = DetailsFragment()
-            detailsFragment.arguments = Bundle().apply {
-                putString("details", "some information")
-            }
-            requireActivity().supportFragmentManager.beginTransaction()
-                .add(R.id.container, detailsFragment)
-                .addToBackStack(detailsFragment.javaClass.simpleName)
-                .commit()
+            showFragment.show(DetailsFragment.newInstance("some info"))
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        showFragment = ShowFragment.Empty()
     }
 }
