@@ -1,9 +1,9 @@
-package com.example.myapplication
+package com.example.myapplication.core
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.example.myapplication.presentation.Mapper
+import com.example.myapplication.animal.presentation.Mapper
 
 interface Communication {
 
@@ -15,7 +15,8 @@ interface Communication {
 
     interface Mutable<T>: Observe<T>, Mutate<T>
 
-    abstract class Abstract<T>(protected val liveData: MutableLiveData<T> = MutableLiveData()) : Mutable<T>{
+    abstract class Abstract<T>(protected val liveData: MutableLiveData<T> = MutableLiveData()) :
+        Mutable<T> {
         override fun observe(owner: LifecycleOwner, observe: Observer<T>) {
             liveData.observe(owner, observe)
         }

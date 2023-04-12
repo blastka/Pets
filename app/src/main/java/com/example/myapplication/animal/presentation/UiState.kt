@@ -1,6 +1,4 @@
-package com.example.myapplication
-
-import com.example.myapplication.presentation.AnimalUi
+package com.example.myapplication.animal.presentation
 
 sealed class UiState {
 

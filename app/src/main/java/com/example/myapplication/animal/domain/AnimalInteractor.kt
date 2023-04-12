@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.animal.domain
 
 interface AnimalInteractor {
     suspend fun init(): AnimalResult

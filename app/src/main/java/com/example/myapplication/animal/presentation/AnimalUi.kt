@@ -1,4 +1,4 @@
-package com.example.myapplication.presentation
+package com.example.myapplication.animal.presentation
 
 import android.widget.TextView
 

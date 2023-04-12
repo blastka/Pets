@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.animal.domain
 
 sealed class AnimalResult {
 
@@ -7,7 +7,7 @@ sealed class AnimalResult {
         fun map(list: List<AnimalFact>, errorMessage: String): T
     }
 
-    abstract fun <T> map(mapper:Mapper<T>): T
+    abstract fun <T> map(mapper: Mapper<T>): T
 
     class Success(private val list: List<AnimalFact> = emptyList()) : AnimalResult() {
         override fun <T> map(mapper: Mapper<T>): T {

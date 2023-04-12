@@ -1,9 +1,8 @@
-package com.example.myapplication.presentation
+package com.example.myapplication.animal.presentation
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import com.example.myapplication.Communication
-import com.example.myapplication.UiState
+import com.example.myapplication.core.Communication
 
 interface AnimalCommunication : ObserveAnimals {
 

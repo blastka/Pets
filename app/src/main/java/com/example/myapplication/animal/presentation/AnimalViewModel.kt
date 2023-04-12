@@ -1,13 +1,12 @@
-package com.example.myapplication.presentation
+package com.example.myapplication.animal.presentation
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.AnimalInteractor
-import com.example.myapplication.AnimalResult
+import com.example.myapplication.animal.domain.AnimalInteractor
+import com.example.myapplication.animal.domain.AnimalResult
 import com.example.myapplication.R
-import com.example.myapplication.UiState
 import kotlinx.coroutines.launch
 
 class AnimalViewModel(

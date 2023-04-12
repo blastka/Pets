@@ -1,8 +1,7 @@
-package com.example.myapplication.presentation
+package com.example.myapplication.animal.presentation
 
-import com.example.myapplication.AnimalFact
-import com.example.myapplication.AnimalResult
-import com.example.myapplication.UiState
+import com.example.myapplication.animal.domain.AnimalFact
+import com.example.myapplication.animal.domain.AnimalResult
 
 class AnimalResultMapper(
     private val communication: AnimalCommunication,

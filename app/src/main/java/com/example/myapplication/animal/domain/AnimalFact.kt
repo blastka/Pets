@@ -1,7 +1,4 @@
-package com.example.myapplication
-
-import com.example.myapplication.presentation.AnimalUi
-import com.example.myapplication.presentation.Mapper
+package com.example.myapplication.animal.domain
 
 data class AnimalFact(private val animalName: String, private val fact: String) {
 

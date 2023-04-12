@@ -9,7 +9,7 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import com.example.myapplication.R
 import com.example.myapplication.details.DetailsFragment
-import com.example.myapplication.presentation.ShowFragment
+import com.example.myapplication.animal.presentation.ShowFragment
 
 class AnimalFragment : Fragment() {
 

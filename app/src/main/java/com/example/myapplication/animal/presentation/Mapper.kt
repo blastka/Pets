@@ -1,6 +1,4 @@
-package com.example.myapplication.presentation
-
-import com.example.myapplication.UiState
+package com.example.myapplication.animal.presentation
 
 interface Mapper<R, S> {
     fun map(source: S): R

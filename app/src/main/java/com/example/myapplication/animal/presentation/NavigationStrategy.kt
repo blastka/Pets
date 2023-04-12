@@ -1,4 +1,4 @@
-package com.example.myapplication.presentation
+package com.example.myapplication.animal.presentation
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

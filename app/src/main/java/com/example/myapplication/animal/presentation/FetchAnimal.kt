@@ -1,4 +1,4 @@
-package com.example.myapplication.presentation
+package com.example.myapplication.animal.presentation
 
 interface FetchAnimal {
     fun init(isFirstRun: Boolean)

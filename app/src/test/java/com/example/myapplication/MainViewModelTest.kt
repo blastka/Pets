@@ -2,7 +2,10 @@ package com.example.myapplication
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import com.example.myapplication.presentation.*
+import com.example.myapplication.animal.domain.AnimalFact
+import com.example.myapplication.animal.domain.AnimalInteractor
+import com.example.myapplication.animal.domain.AnimalResult
+import com.example.myapplication.animal.presentation.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -12,6 +15,7 @@ class MainViewModelTest {
         val interactor = FakeAnimalInteractor()
         val communication = FakeAnimalCommunication.Base()
         val viewModel = AnimalViewModel(
+            FakeManageResources(),
             interactor,
             communication,
             AnimalResultMapper(communication, AnimalUiMapper())
@@ -57,6 +61,7 @@ class MainViewModelTest {
         val interactor = FakeAnimalInteractor()
         val communication = FakeAnimalCommunication.Base()
         val viewModel = AnimalViewModel(
+            FakeManageResources(),
             interactor,
             communication,
             AnimalResultMapper(communication, AnimalUiMapper())
@@ -77,6 +82,7 @@ class MainViewModelTest {
         val interactor = FakeAnimalInteractor()
         val communication = FakeAnimalCommunication.Base()
         val viewModel = AnimalViewModel(
+            FakeManageResources(),
             interactor,
             communication,
             AnimalResultMapper(communication, AnimalUiMapper())
@@ -159,5 +165,14 @@ private interface FakeAnimalCommunication : AnimalCommunication {
         override fun observeList(owner: LifecycleOwner, observe: Observer<List<AnimalUi>>) = Unit
 
     }
+}
+
+class FakeManageResources: ManageResources {
+    var text = ""
+
+    override fun string(id: Int): String {
+        return text
+    }
+
 }
 
