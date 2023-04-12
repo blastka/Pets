@@ -1,6 +1,4 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="name_animal">Input animal name</string>
-    <string name="empty">Entered animal is empty.</string>
-
 </resources>

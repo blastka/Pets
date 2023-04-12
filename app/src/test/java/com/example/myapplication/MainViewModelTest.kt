@@ -67,7 +67,7 @@ class MainViewModelTest {
 
         assertEquals(0, communication.progressCalledList.size)
         assertEquals(1, communication.stateCalledList.size)
-        assertEquals(UiState.Error("Entered animal is empty."), communication.stateCalledList[0])
+        assertEquals(UiState.Error("Entered number is empty."), communication.stateCalledList[0])
         assertEquals(0, communication.timesShowList)
 
     }
@@ -128,7 +128,7 @@ private class FakeAnimalInteractor() : AnimalInteractor {
         return result
     }
 
-    override suspend fun factAboutAnimal(animalList: String): AnimalResult {
+    override suspend fun factAboutAnimal(animalList: List<String>): AnimalResult {
         fetchAboutAnimalCalledList.add(result)
         return result
     }

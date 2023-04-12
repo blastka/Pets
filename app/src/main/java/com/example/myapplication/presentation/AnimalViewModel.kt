@@ -2,21 +2,17 @@ package com.example.myapplication.presentation
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.example.myapplication.AnimalFact
 import com.example.myapplication.AnimalInteractor
 import com.example.myapplication.AnimalResult
-import com.example.myapplication.R
 import com.example.myapplication.UiState
-import kotlinx.coroutines.launch
 
 class AnimalViewModel(
-    private val manageResources: ManageResources,
     private val interactor: AnimalInteractor,
     private val communication: AnimalCommunication,
     private val animalResultMapper: AnimalResult.Mapper<Unit>
 
-) : ObserveAnimals, FetchAnimal, ViewModel() {
+) : ObserveAnimals, FetchAnimal {
 
     override fun observeProgress(owner: LifecycleOwner, observe: Observer<Boolean>) {
         communication.observeProgress(owner, observe)
@@ -31,9 +27,9 @@ class AnimalViewModel(
     }
 
     override fun init(isFirstRun: Boolean) {
-       if (isFirstRun) {
+        if (isFirstRun) {
             communication.showProgress(true)
-           viewModelScope.launch {
+            viewModelScoupe.launch {
                 val result = interactor.init()
                 communication.showProgress(false)
                 result.map(animalResultMapper)
@@ -46,16 +42,8 @@ class AnimalViewModel(
     }
 
     override fun fetchAnimalData(animal: String) {
-        if (animal.isEmpty()){
-            communication.showState(UiState.Error(manageResources.string(R.string.empty)))
-        } else
-        {
-            communication.showProgress(true)
-            viewModelScope.launch {
-                val result = interactor.factAboutAnimal(animal) //должен быть лист
-                communication.showProgress(false)
-                result.map(animalResultMapper)
-            }
-        }
+        TODO("Not yet implemented")
     }
+
+
 }
